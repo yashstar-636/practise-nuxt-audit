@@ -1,0 +1,186 @@
+<template>
+  <div class="p-6">
+    <div class="flex justify-between items-center mb-4">
+      <NuxtLink to="/" class="bg-purple-700 text-white px-4 py-2 rounded">Back to Device</NuxtLink>
+    </div>
+
+    <h2 class="text-2xl font-bold text-blue-700 mb-4">Add Device</h2>
+
+    <form @submit.prevent="updateDevice" class="grid grid-cols-3 gap-4 bg-white p-6 rounded shadow">
+      <!-- Row 1 -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Device ID</label>
+        <input type="text"  v-model='device.deviceId' class="border rounded px-3 py-2 w-full" placeholder="Enter Device ID" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Assign Device Name</label>
+        <input type="text" v-model="device.name" class="border rounded px-3 py-2 w-full" placeholder="Enter Device Name" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Device Type</label>
+        <input type="text" v-model="device.type" class="border rounded px-3 py-2 w-full" placeholder="Device Type" />
+      </div>
+
+      <!-- Row 2 -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">WiFi SSID</label>
+        <input type="text" v-model="device.ssid" class="border rounded px-3 py-2 w-full" placeholder="Enter WiFi SSID" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">WiFi Password</label>
+        <input type="password" v-model="device.password" class="border rounded px-3 py-2 w-full" placeholder="Enter WiFi Password" />
+      </div>
+
+      <!-- Spacer for layout -->
+      <div></div>
+
+      <!-- Row 3 -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Min Temperature (Internal)</label>
+        <input type="number" v-model="device.minTempInternal" class="border rounded px-3 py-2 w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Max Temperature (Internal)</label>
+        <input type="number" v-model="device.maxTempInternal" class="border rounded px-3 py-2 w-full" />
+      </div>
+
+      <!-- Row 4 -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Min Temp Warning (Internal)</label>
+        <input type="number" v-model="device.minWarnInternal" class="border rounded px-3 py-2 w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Max Temp Warning (Internal)</label>
+        <input type="number" v-model="device.maxWarnInternal" class="border rounded px-3 py-2 w-full" />
+      </div>
+
+      <!-- Row 5 -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Min Temperature (Probe)</label>
+        <input type="number" v-model="device.minTempProbe" class="border rounded px-3 py-2 w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Max Temperature (Probe)</label>
+        <input type="number" v-model="device.maxTempProbe" class="border rounded px-3 py-2 w-full" />
+      </div>
+
+      <!-- Row 6 -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Min Temp Warning (Probe)</label>
+        <input type="number" v-model="device.minWarnProbe" class="border rounded px-3 py-2 w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Max Temp Warning (Probe)</label>
+        <input type="number" v-model="device.maxWarnProbe" class="border rounded px-3 py-2 w-full" />
+      </div>
+
+      <!-- Row 7 -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Logging Interval</label>
+        <input type="text" v-model="device.loggingInterval" class="border rounded px-3 py-2 w-full" placeholder="e.g., 1 min" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Sending Interval</label>
+        <input type="text" v-model="device.sendingInterval" class="border rounded px-3 py-2 w-full" placeholder="e.g., 1 min" />
+      </div>
+
+      <!-- Buttons -->
+      <div class="col-span-3 flex justify-end gap-3 mt-4">
+        <button type="button" @click="updateDevice" class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded">
+          Add a new device
+        </button>
+        <button @click="clearAll" type="reset" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">
+          Clear All
+        </button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script setup>
+import { reactive, } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter();
+
+const device = reactive({
+  deviceId: '',
+  name: '',
+  type: '',
+  ssid: '',
+  password: '',
+  minTempInternal: '',
+  maxTempInternal: '',
+  minWarnInternal: '',
+  maxWarnInternal: '',
+  minTempProbe: '',
+  maxTempProbe: '',
+  minWarnProbe: '',
+  maxWarnProbe: '',
+  loggingInterval: '',
+  sendingInterval: '',
+  user_id:"rathodyash636@gmail.com"
+})
+const error=ref('')
+function clearAll(){
+  device.deviceId= '',
+  device.name="",
+  device.type="",
+  device.ssid="",
+  device.password="",
+  device.minTempInternal="",
+  device.maxTempInternal="",
+  device.minWarnInternal="",
+  device.maxWarnInternal="",
+  device.minTempProbe="",
+  device.maxTempProbe="",
+  device.minWarnProbe="",
+  device.maxWarnProbe="",
+  device.loggingInterval="",
+  device.sendingInterval=""
+}
+
+async function updateDevice(){
+   router.push('/devices')
+
+  if(device.deviceId===""||
+  device.name===""||
+  device.type===""||
+  device.minTempInternal===""||
+  device.maxTempInternal===""||
+  device.minWarnInternal===""||
+  device.maxWarnInternal===""||
+  device.minTempProbe===""||
+  device.maxTempProbe===""||
+  device.minWarnProbe===""||
+  device.maxWarnProbe===""||
+  device.loggingInterval===""||
+  device.sendingInterval===""){
+    error.value="Please fill the fields!!"
+  }
+  else{
+
+    const result=await addUser()
+    if(result){
+   router.push('/devices')
+  }
+  }
+}
+
+async function addUser() {
+  const result=await $fetch('/api/devices', {
+    method: 'post',
+    body: { data:device},
+  })
+  return result
+}
+
+</script>
+                                                                                        

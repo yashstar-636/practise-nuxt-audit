@@ -1,0 +1,17 @@
+# Node dependencies
+node_modules/
+
+# Nuxt build
+.nuxt/
+dist/
+build/
+
+
+# Logs
+*.log
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
