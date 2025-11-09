@@ -1,34 +1,34 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from "vue";
 
-const auditLogs = ref([])
-const rowsPerPage = ref(10)
-const currentPage = ref(1)
-const searchQuery = ref('')
+const auditLogs = ref([]);
+const rowsPerPage = ref(10);
+const currentPage = ref(1);
+const searchQuery = ref("");
 
 // Fetch audit data from API
 onMounted(async () => {
   try {
-    const result = await $fetch('/api/devices')
-    auditLogs.value = result.result || []
+    const result = await $fetch("/api/devices");
+    auditLogs.value = result.result || [];
   } catch (err) {
-    console.error('Error fetching audit logs:', err)
+    console.error("Error fetching audit logs:", err);
   }
-})
+});
 
 async function pdfDownload(ids) {
   try {
     const pdfData = await $fetch(`/api/pdfpreview`, {
       params: { id: ids },
-      responseType: 'arrayBuffer' // important: get raw bytes
+      responseType: "arrayBuffer", // important: get raw bytes
     });
 
     // Convert to blob
-    const blob = new Blob([pdfData], { type: 'application/pdf' });
+    const blob = new Blob([pdfData], { type: "application/pdf" });
 
     // Create download link
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = `report_${ids}.pdf`; // filename
     document.body.appendChild(link);
@@ -37,12 +37,10 @@ async function pdfDownload(ids) {
     // Clean up
     URL.revokeObjectURL(url);
     link.remove();
-
   } catch (err) {
-    console.error('Error downloading PDF:', err);
+    console.error("Error downloading PDF:", err);
   }
 }
-
 
 // Computed paginated data
 const filteredLogs = computed(() => {
@@ -50,20 +48,20 @@ const filteredLogs = computed(() => {
     Object.values(log).some((val) =>
       String(val).toLowerCase().includes(searchQuery.value.toLowerCase())
     )
-  )
-  const start = (currentPage.value - 1) * rowsPerPage.value
-  return filtered.slice(start, start + rowsPerPage.value)
-})
+  );
+  const start = (currentPage.value - 1) * rowsPerPage.value;
+  return filtered.slice(start, start + rowsPerPage.value);
+});
 
 const totalPages = computed(() =>
   Math.ceil(auditLogs.value.length / rowsPerPage.value)
-)
+);
 
 function nextPage() {
-  if (currentPage.value < totalPages.value) currentPage.value++
+  if (currentPage.value < totalPages.value) currentPage.value++;
 }
 function prevPage() {
-  if (currentPage.value > 1) currentPage.value--
+  if (currentPage.value > 1) currentPage.value--;
 }
 </script>
 
@@ -94,11 +92,12 @@ function prevPage() {
         />
       </div>
 
-      <button
+      <NuxtLink
+        to="/auditReport"
         class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800 transition"
       >
         + Report
-      </button>
+      </NuxtLink>
     </div>
 
     <!-- Table -->
@@ -124,7 +123,14 @@ function prevPage() {
             <td class="border px-4 py-2">{{ log.device_id }}</td>
             <td class="border px-4 py-2">{{ log.device_name }}</td>
             <td class="border px-4 py-2">{{ log.device_type }}</td>
-            <td class="border px-4 py-2"><button @click="pdfDownload(log.device_id)" class="bg-green-800  px-2 border border-black text-white text-lg rounded">Pdf</button></td>
+            <td class="border px-4 py-2">
+              <button
+                @click="pdfDownload(log.device_id)"
+                class="bg-green-800 px-2 border border-black text-white text-lg rounded"
+              >
+                Pdf
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
